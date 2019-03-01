@@ -26,7 +26,8 @@ function getAwesomeLinks(bulletListTokens) {
     .map(token => {
       return {
         linkText: token.children.find(x => x.type === 'text').content,
-        linkHref: token.children.find(x => x.type === 'link_open').attrs[0][1]
+        linkHref: token.children.find(x => x.type === 'link_open').attrs[0][1],
+        desc: token.children.length === 4 ? token.children[3].content.trim() : undefined,
       };
     });
 }
