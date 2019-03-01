@@ -1,21 +1,27 @@
 const MarkdownIt = require('markdown-it');
 
 function getBulletListTokens(tokens, header) {
-  const contentsIndex = tokens.findIndex(x => x.markup === '##');
-  if (tokens[contentsIndex + 1].content === header) {
-    const relevantTokens = tokens.slice(contentsIndex);
+  let remainingTokens = tokens;
+  while (remainingTokens.length) {
+    const headerIndex = remainingTokens.findIndex(x => x.markup === '##');
+    if (headerIndex === -1) {
+      return [];
+    }
 
-    const bulletListStart = relevantTokens.findIndex(x => x.type === 'bullet_list_open');
-    const bulletListEnd = relevantTokens.findIndex(x => x.type === 'bullet_list_close');
+    remainingTokens = remainingTokens.slice(headerIndex + 1);
+    if (remainingTokens[0].content === header) {
+      const bulletListStart = remainingTokens.findIndex(x => x.type === 'bullet_list_open');
+      const bulletListEnd = remainingTokens.findIndex(x => x.type === 'bullet_list_close');
 
-    const bulletList = relevantTokens.slice(bulletListStart, bulletListEnd);
-    return bulletList;
+      const bulletList = remainingTokens.slice(bulletListStart, bulletListEnd);
+      return bulletList;
+    }
   }
 }
 
 
-function readContents(contentTokens) {
-  return contentTokens
+function getAwesomeLinks(bulletListTokens) {
+  return bulletListTokens
     .filter(token => token.type === 'inline')
     .map(token => {
       return {
@@ -30,11 +36,14 @@ module.exports = function(awesomeMd) {
   const md = new MarkdownIt();
   const result = md.parse(awesomeMd);
 
+  // console.log(result.find(x => x.content === 'Platforms'));
+
   const bulletList = getBulletListTokens(result, 'Contents');
-  const contents = readContents(bulletList);
+  const contents = getAwesomeLinks(bulletList);
 
   for (let content of contents) {
-    // content.lists = readLists();
+    const contentTokens = getBulletListTokens(result, content.linkText);
+    content.lists = getAwesomeLinks(contentTokens);
   }
 
   return {
