@@ -1,8 +1,8 @@
 {
   "name": "awesome-parser",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "Parse a font awesome list to an array",
+  "main": "parser.js",
   "scripts": {
     "test": "ava"
   },
