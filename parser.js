@@ -47,9 +47,5 @@ module.exports = function(awesomeMd) {
     content.lists = getAwesomeLinks(contentTokens);
   }
 
-  return {
-    contents
-  };
-
-  return 'Oh noes!';
+  return contents;
 }
