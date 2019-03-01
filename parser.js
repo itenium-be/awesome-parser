@@ -1,6 +1,6 @@
 const MarkdownIt = require('markdown-it');
 
-function getBulletListTokens(tokens, header) {
+function getBulletListTokens(tokens, header, level) {
   let remainingTokens = tokens;
   while (remainingTokens.length) {
     const headerIndex = remainingTokens.findIndex(x => x.markup === '##');
@@ -11,7 +11,8 @@ function getBulletListTokens(tokens, header) {
     remainingTokens = remainingTokens.slice(headerIndex + 1);
     if (remainingTokens[0].content === header) {
       const bulletListStart = remainingTokens.findIndex(x => x.type === 'bullet_list_open');
-      const bulletListEnd = remainingTokens.findIndex(x => x.type === 'bullet_list_close');
+      const bulletListLevel = remainingTokens[bulletListStart].level;
+      const bulletListEnd = remainingTokens.findIndex(x => x.type === 'bullet_list_close' && x.level === bulletListLevel);
 
       const bulletList = remainingTokens.slice(bulletListStart, bulletListEnd);
       return bulletList;
@@ -36,8 +37,6 @@ function getAwesomeLinks(bulletListTokens) {
 module.exports = function(awesomeMd) {
   const md = new MarkdownIt();
   const result = md.parse(awesomeMd);
-
-  // console.log(result.find(x => x.content === 'Platforms'));
 
   const bulletList = getBulletListTokens(result, 'Contents');
   const contents = getAwesomeLinks(bulletList);
