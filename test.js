@@ -17,14 +17,14 @@ test('it reads the contents', t => {
   const result = awesomeParser(awesomeAwesome);
 
   t.deepEqual(result, [
-    {linkHref: 'platforms', linkText: 'Platforms', lists: [], desc: undefined},
-    {linkHref: 'programming-languages', linkText: 'Programming Languages', lists: [], desc: undefined},
+    {linkHref: 'platforms', linkText: 'Platforms', entries: [], desc: undefined},
+    {linkHref: 'programming-languages', linkText: 'Programming Languages', entries: [], desc: undefined},
   ]);
 });
 
 
 
-test('it adds the awesome lists to the contents', t => {
+test('it adds the awesome entries to the contents', t => {
   const awesomeAwesome = `
 ## Contents
 
@@ -38,9 +38,9 @@ test('it adds the awesome lists to the contents', t => {
 
   const result = awesomeParser(awesomeAwesome);
 
-  t.deepEqual(result[0].lists, [
-    {linkHref: 'https://github.com/sindresorhus/awesome-nodejs#readme', linkText: 'Node.js', desc: undefined, lists: []},
-    {linkHref: 'https://github.com/dypsilon/frontend-dev-bookmarks#readme', linkText: 'Frontend Development', desc: undefined, lists: []},
+  t.deepEqual(result[0].entries, [
+    {linkHref: 'https://github.com/sindresorhus/awesome-nodejs#readme', linkText: 'Node.js', desc: undefined, entries: []},
+    {linkHref: 'https://github.com/dypsilon/frontend-dev-bookmarks#readme', linkText: 'Frontend Development', desc: undefined, entries: []},
   ]);
 });
 
@@ -59,7 +59,7 @@ test('it adds the link desc if one exists', t => {
 
   const result = awesomeParser(awesomeAwesome);
 
-  t.is(result[0].lists[0].desc, '- Async non-blocking event-driven JavaScript runtime built on Chrome\'s V8 JavaScript engine.');
+  t.is(result[0].entries[0].desc, '- Async non-blocking event-driven JavaScript runtime built on Chrome\'s V8 JavaScript engine.');
 });
 
 
@@ -81,10 +81,10 @@ test('it parses hierarchically', t => {
   const result = awesomeParser(awesomeAwesome);
 
   const platforms = result[0];
-  t.deepEqual(platforms.lists.map(x => x.linkText), ['macOS', 'JVM']);
+  t.deepEqual(platforms.entries.map(x => x.linkText), ['macOS', 'JVM']);
 
-  const macOS = result[0].lists[0];
-  t.deepEqual(macOS.lists.map(x => x.linkText), ['Command-Line', 'Screensavers']);
+  const macOS = result[0].entries[0];
+  t.deepEqual(macOS.entries.map(x => x.linkText), ['Command-Line', 'Screensavers']);
 });
 
 

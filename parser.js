@@ -34,13 +34,13 @@ function getAwesomeLinks(bulletListTokens) {
         linkText: token.children.find(x => x.type === 'text').content,
         linkHref: token.children.find(x => x.type === 'link_open').attrs[0][1].replace(/^\s*#/, ''),
         desc: token.children.length === 4 ? token.children[3].content.trim() : undefined,
-        lists: [],
+        entries: [],
       };
 
       if (token.level === level) {
         acc.push(entry);
       } else {
-        acc[acc.length - 1].lists.push(entry);
+        acc[acc.length - 1].entries.push(entry);
       }
 
       return acc;
@@ -57,7 +57,7 @@ module.exports = function(awesomeMd) {
 
   for (let content of contents) {
     const contentTokens = getBulletListTokens(result, content.linkText);
-    content.lists = getAwesomeLinks(contentTokens);
+    content.entries = getAwesomeLinks(contentTokens);
   }
 
   return contents;
