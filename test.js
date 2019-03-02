@@ -17,8 +17,8 @@ test('it reads the contents', t => {
   const result = awesomeParser(awesomeAwesome);
 
   t.deepEqual(result, [
-    {linkHref: '#platforms', linkText: 'Platforms', lists: [], desc: undefined},
-    {linkHref: '#programming-languages', linkText: 'Programming Languages', lists: [], desc: undefined},
+    {linkHref: 'platforms', linkText: 'Platforms', lists: [], desc: undefined},
+    {linkHref: 'programming-languages', linkText: 'Programming Languages', lists: [], desc: undefined},
   ]);
 });
 
@@ -39,8 +39,8 @@ test('it adds the awesome lists to the contents', t => {
   const result = awesomeParser(awesomeAwesome);
 
   t.deepEqual(result[0].lists, [
-    {linkHref: 'https://github.com/sindresorhus/awesome-nodejs#readme', linkText: 'Node.js', desc: undefined},
-    {linkHref: 'https://github.com/dypsilon/frontend-dev-bookmarks#readme', linkText: 'Frontend Development', desc: undefined},
+    {linkHref: 'https://github.com/sindresorhus/awesome-nodejs#readme', linkText: 'Node.js', desc: undefined, lists: []},
+    {linkHref: 'https://github.com/dypsilon/frontend-dev-bookmarks#readme', linkText: 'Frontend Development', desc: undefined, lists: []},
   ]);
 });
 
@@ -64,7 +64,7 @@ test('it adds the link desc if one exists', t => {
 
 
 
-test("it doesn't do hierarchical sublinks", t => {
+test('it parses hierarchically', t => {
   const awesomeAwesome = `
   ## Contents
 
@@ -81,7 +81,10 @@ test("it doesn't do hierarchical sublinks", t => {
   const result = awesomeParser(awesomeAwesome);
 
   const platforms = result[0];
-  t.deepEqual(platforms.lists.map(x => x.linkText), ['macOS', 'Command-Line', 'Screensavers', 'JVM']);
+  t.deepEqual(platforms.lists.map(x => x.linkText), ['macOS', 'JVM']);
+
+  const macOS = result[0].lists[0];
+  t.deepEqual(macOS.lists.map(x => x.linkText), ['Command-Line', 'Screensavers']);
 });
 
 

@@ -22,15 +22,29 @@ function getBulletListTokens(tokens, header, level) {
 
 
 function getAwesomeLinks(bulletListTokens) {
-  return bulletListTokens
-    .filter(token => token.type === 'inline')
-    .map(token => {
-      return {
+  const inlineTokens = bulletListTokens.filter(token => token.type === 'inline');
+  if (!inlineTokens.length) {
+    return [];
+  }
+
+  const level = inlineTokens[0].level;
+  return inlineTokens
+    .reduce((acc, token) => {
+      const entry = {
         linkText: token.children.find(x => x.type === 'text').content,
-        linkHref: token.children.find(x => x.type === 'link_open').attrs[0][1],
+        linkHref: token.children.find(x => x.type === 'link_open').attrs[0][1].replace(/^\s*#/, ''),
         desc: token.children.length === 4 ? token.children[3].content.trim() : undefined,
+        lists: [],
       };
-    });
+
+      if (token.level === level) {
+        acc.push(entry);
+      } else {
+        acc[acc.length - 1].lists.push(entry);
+      }
+
+      return acc;
+    }, []);
 }
 
 
